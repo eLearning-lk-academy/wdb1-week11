@@ -13,8 +13,11 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::all();
-        dump($posts[0]->title);
-        dd($posts);
+    
+        return view('posts.index',[
+            'posts' => $posts,
+            'title' => 'All Posts'
+        ]);
     }
 
     /**
@@ -22,7 +25,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**
@@ -30,7 +33,13 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Post::create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'author' => $request->author,
+        ]);
+
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -38,7 +47,12 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        $post = Post::find($post)->first();
+        
+        return view('posts.show',[
+            'post' => $post,
+            'title' => $post->title
+        ]);
     }
 
     /**
@@ -46,7 +60,12 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        $post = Post::find($post)->first();
+        
+        return view('posts.edit',[
+            'post' => $post,
+            'title' => 'Edit post'
+        ]);
     }
 
     /**
@@ -54,7 +73,13 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $post = Post::find($post)->first();
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->author = $request->author;
+        $post->save();
+
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -62,6 +87,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post = Post::find($post)->first();
+        $post->delete();
+
+        return redirect()->route('posts.index');
     }
 }
